@@ -1,0 +1,31 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Caches and runtime artifacts
+.notebook-cache/
+.notebook-runtime/
+.ipynb_checkpoints/
+before_notebook_run/
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Large Model Binaries (>100MB GitHub limit)
+*.joblib
+*.pkl
+*.parquet
+
+# (Optional: If you want to track small json summaries and keep datasets local)
+# data/raw/
+# data/processed/
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
