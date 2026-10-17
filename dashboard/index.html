@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel Booking Demand Intelligence & Decision Support System | IT3091 ML</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="app-container">
+  
+  <!-- Header -->
+  <header class="app-header">
+    <div class="brand-section">
+      <div class="brand-icon">🏨</div>
+      <div>
+        <h1 class="brand-title">Hotel Booking Demand Intelligence & Revenue Risk System</h1>
+        <p class="brand-subtitle">IT3091 Machine Learning — Domain 6: Tourism & Hospitality | Group 6</p>
+      </div>
+    </div>
+    <div class="header-badges">
+      <span class="badge badge-primary">Supervised Classification</span>
+      <span class="badge badge-success">Cost-Benefit T* = 0.39</span>
+      <span class="badge badge-warning">Unsupervised K-Means</span>
+      <span class="badge badge-danger">119,390 Bookings</span>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="nav-tabs" role="tablist">
+    <button class="nav-tab active" onclick="switchTab('overview')">1. Executive Overview</button>
+    <button class="nav-tab" onclick="switchTab('eda')">2. Exploratory Data Insights</button>
+    <button class="nav-tab" onclick="switchTab('predictor')">3. Live Booking Risk Predictor</button>
+    <button class="nav-tab" onclick="switchTab('simulator')">4. Revenue & Overbooking Engine</button>
+    <button class="nav-tab" onclick="switchTab('segments')">5. Customer Personas</button>
+    <button class="nav-tab" onclick="switchTab('benchmarks')">6. Model Comparison & Evidence Logs</button>
+  </nav>
+
+  <!-- TAB 1: EXECUTIVE OVERVIEW -->
+  <section id="tab-overview" class="tab-content active">
+    <!-- KPI Row -->
+    <div class="kpi-grid">
+      <div class="kpi-card rose">
+        <div class="kpi-label">Baseline Cancellation Rate</div>
+        <div class="kpi-value" id="kpi-cancel-rate">37.08%</div>
+        <div class="kpi-subtext">44,224 of 119,390 bookings lost</div>
+      </div>
+      <div class="kpi-card emerald">
+        <div class="kpi-label">Champion Model ROC-AUC</div>
+        <div class="kpi-value">0.9473</div>
+        <div class="kpi-subtext">Random Forest / XGBoost (0.943)</div>
+      </div>
+      <div class="kpi-card blue">
+        <div class="kpi-label">Optimal Decision Cutoff (T*)</div>
+        <div class="kpi-value">0.39</div>
+        <div class="kpi-subtext">Optimized from default 0.50 threshold</div>
+      </div>
+      <div class="kpi-card amber">
+        <div class="kpi-label">Annualized Revenue Lift</div>
+        <div class="kpi-value">+$84,557</div>
+        <div class="kpi-subtext">Per 100k bookings via resale & buffer</div>
+      </div>
+    </div>
+
+    <!-- Dual Lens Framing Panel -->
+    <div class="glass-panel">
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title">🎯 Dual Business Decision Lenses & Problem Formulation</h2>
+          <p class="panel-subtitle">Aligning machine learning objectives with hotel revenue and front-desk operational reality</p>
+        </div>
+      </div>
+
+      <div class="grid-2col">
+        <div style="background: rgba(15, 23, 42, 0.6); padding: 20px; border-radius: var(--radius-md); border-left: 4px solid var(--accent-blue);">
+          <h3 style="font-size: 16px; font-weight: 700; color: #60a5fa; margin-bottom: 8px;">Primary Lens: Cancellation Risk Prediction & Revenue Mitigation</h3>
+          <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+            <strong>Stakeholders:</strong> Hotel General Managers & Revenue Directors.<br>
+            <strong>Decision Dilemma:</strong> Hotel rooms are perishable inventory. Vacant rooms destroy profit, while unguided overbooking incurs $250+ guest walking compensation and brand damage.<br>
+            <strong>Unit of Analysis:</strong> A single confirmed booking transaction ($N = 119,390$).<br>
+            <strong>Target & Task:</strong> Supervised binary classification predicting $P(\text{is\_canceled}=1)$ + Cost-Sensitive expected value thresholding ($T^* = 0.39$).
+          </p>
+          <span class="badge badge-primary">Output: Probability + 3-Tier Risk Rating</span>
+        </div>
+
+        <div style="background: rgba(15, 23, 42, 0.6); padding: 20px; border-radius: var(--radius-md); border-left: 4px solid var(--accent-emerald);">
+          <h3 style="font-size: 16px; font-weight: 700; color: #34d399; margin-bottom: 8px;">Secondary Lens: Behavioral Booking & Customer Segmentation</h3>
+          <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+            <strong>Coherent Justification:</strong> Directly strengthens the primary lens because cancellation elasticity differs across traveler archetypes (e.g. business travelers vs family vacationers vs long-lead tour groups).<br>
+            <strong>Methodology:</strong> Unsupervised $K$-Means clustering on behavioral features (lead time, stay nights, ADR, special requests, cancellation history).<br>
+            <strong>Output:</strong> 4 distinct guest personas with targeted deposit and retention policies.
+          </p>
+          <span class="badge badge-success">Output: 4 Customer Personas & Action Playbooks</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workflow Diagram Frame -->
+    <div class="glass-panel">
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title">🔄 End-to-End CRISP-DM Machine Learning Workflow</h2>
+          <p class="panel-subtitle">Zero-leakage data architecture from raw PMS ingestion to operational decision engine</p>
+        </div>
+      </div>
+      <div class="grid-3col">
+        <div class="figure-frame">
+          <img src="assets/fig1_target_hotel_distribution.png" class="figure-img" alt="Target Distribution">
+          <div class="figure-caption">Phase 1: Target Profiling & Property Breakdown (37.08% cancellations)</div>
+        </div>
+        <div class="figure-frame">
+          <img src="assets/fig9_roc_pr_curves.png" class="figure-img" alt="ROC & PR Curves">
+          <div class="figure-caption">Phase 2: Multi-Model Supervised Benchmarking (ROC-AUC 0.947)</div>
+        </div>
+        <div class="figure-frame">
+          <img src="assets/fig11_cost_benefit_optimization.png" class="figure-img" alt="Cost Benefit Optimization">
+          <div class="figure-caption">Phase 3: Cost-Benefit Revenue Optimization ($T^* = 0.39$)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 2: EXPLORATORY DATA INSIGHTS -->
+  <section id="tab-eda" class="tab-content">
+    <div class="glass-panel">
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title">📊 Key Exploratory Data Analysis & Empirical Patterns</h2>
+          <p class="panel-subtitle">Revealing non-linear drivers, the 'Deposit Paradox', and booking commitment signals</p>
+        </div>
+      </div>
+
+      <div class="grid-2col">
+        <div class="figure-frame">
+          <img src="assets/fig2_lead_time_distribution.png" class="figure-img" alt="Lead Time Distribution">
+          <div class="figure-caption"><strong>Finding 1: Lead Time Risk Gradient.</strong> Cancelled bookings have a mean lead time of 145 days (median: 113d) vs 80 days (median: 49d) for confirmed stays.</div>
+        </div>
+
+        <div class="figure-frame">
+          <img src="assets/fig3_deposit_market_segment.png" class="figure-img" alt="Deposit Type Paradox">
+          <div class="figure-caption"><strong>Finding 2: The Deposit Type Paradox.</strong> Non-refundable bookings exhibit a 99% cancellation rate due to heavy institutional adoption by speculative tour group blocks.</div>
+        </div>
+
+        <div class="figure-frame">
+          <img src="assets/fig4_special_requests_parking.png" class="figure-img" alt="Commitment Signals">
+          <div class="figure-caption"><strong>Finding 3: Customer Commitment Signals.</strong> Parking space requests reduce cancellation risk to nearly 0.0%, and each special request drops cancellation risk by ~12%.</div>
+        </div>
+
+        <div class="figure-frame">
+          <img src="assets/fig5_monthly_seasonality.png" class="figure-img" alt="Monthly Seasonality">
+          <div class="figure-caption"><strong>Finding 4: Property Seasonality.</strong> City Hotel cancellations peak in summer months (~44%), while Resort Hotel cancellations remain steadier (~30-33%).</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 3: LIVE BOOKING RISK PREDICTOR -->
+  <section id="tab-predictor" class="tab-content">
+    <div class="grid-2col">
+      <!-- Input Form -->
+      <div class="glass-panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">⚙️ Interactive Booking Parameter Simulator</h2>
+            <p class="panel-subtitle">Adjust booking attributes to calculate real-time cancellation risk</p>
+          </div>
+          <div>
+            <select class="form-control" id="preset-selector" onchange="loadPreset(this.value)" style="width: 180px;">
+              <option value="custom">-- Load Preset --</option>
+              <option value="business">Spontaneous Business</option>
+              <option value="family">Family Vacationer</option>
+              <option value="highrisk">High-Risk Tour Group</option>
+              <option value="loyal">Loyal Direct Guest</option>
+            </select>
+          </div>
+        </div>
+
+        <form id="prediction-form" onsubmit="event.preventDefault(); calculateLiveRisk();">
+          <div class="grid-2col">
+            <div class="form-group">
+              <label class="form-label">Property Type</label>
+              <select class="form-control" id="inp-hotel">
+                <option value="City Hotel">City Hotel (Lisbon)</option>
+                <option value="Resort Hotel">Resort Hotel (Algarve)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Market Segment</label>
+              <select class="form-control" id="inp-market">
+                <option value="Online TA">Online Travel Agent (OTA)</option>
+                <option value="Offline TA/TO">Offline TA / Tour Operator</option>
+                <option value="Direct">Direct Booking (Hotel Web/Phone)</option>
+                <option value="Corporate">Corporate / Business</option>
+                <option value="Groups">Tour / Event Groups</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Lead Time (Days before arrival): <span class="range-val" id="val-lead">120 days</span></label>
+            <input type="range" class="form-range" id="inp-lead" min="0" max="400" value="120" oninput="updateRange('lead', this.value, ' days')">
+          </div>
+
+          <div class="grid-2col">
+            <div class="form-group">
+              <label class="form-label">Total Stay Nights: <span class="range-val" id="val-stay">3 nights</span></label>
+              <input type="range" class="form-range" id="inp-stay" min="1" max="14" value="3" oninput="updateRange('stay', this.value, ' nights')">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Average Daily Rate (ADR): <span class="range-val" id="val-adr">$115</span></label>
+              <input type="range" class="form-range" id="inp-adr" min="30" max="450" value="115" oninput="updateRange('adr', this.value, '', '$')">
+            </div>
+          </div>
+
+          <div class="grid-2col">
+            <div class="form-group">
+              <label class="form-label">Deposit Type</label>
+              <select class="form-control" id="inp-deposit">
+                <option value="No Deposit">No Deposit</option>
+                <option value="Non Refund">Non-Refundable Deposit</option>
+                <option value="Refundable">Refundable Deposit</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Customer Type</label>
+              <select class="form-control" id="inp-customer">
+                <option value="Transient">Transient (Individual)</option>
+                <option value="Transient-Party">Transient-Party</option>
+                <option value="Contract">Contract</option>
+                <option value="Group">Group</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid-3col">
+            <div class="form-group">
+              <label class="form-label">Special Requests</label>
+              <select class="form-control" id="inp-requests">
+                <option value="0">0 Requests</option>
+                <option value="1">1 Request</option>
+                <option value="2">2+ Requests</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Parking Space</label>
+              <select class="form-control" id="inp-parking">
+                <option value="0">No Parking</option>
+                <option value="1">1 Space Needed</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Past Cancellations</label>
+              <select class="form-control" id="inp-past-cancel">
+                <option value="0">0 (Clean History)</option>
+                <option value="1">1 Previous Cancel</option>
+                <option value="2">2+ Previous Cancels</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">⚡ Run ML Risk Assessment</button>
+        </form>
+      </div>
+
+      <!-- Real-Time Output -->
+      <div class="glass-panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">🛡️ Decision Support & Action Recommendation</h2>
+            <p class="panel-subtitle">Powered by XGBoost / Random Forest Inference Pipeline</p>
+          </div>
+        </div>
+
+        <div class="result-card">
+          <div class="probability-circle" id="circle-gauge">
+            <span class="prob-number" id="res-prob-pct">68.4%</span>
+            <span class="prob-label">Cancel Risk</span>
+          </div>
+
+          <div style="margin-bottom: 16px;">
+            <span class="badge badge-danger" id="res-tier-badge" style="font-size: 14px; padding: 6px 18px;">High Risk Reservation</span>
+          </div>
+
+          <div class="action-box">
+            <div class="action-title" id="res-action-title">Policy Action: Dynamic Deposit & Overbooking Pool</div>
+            <div class="action-desc" id="res-action-desc">
+              Mandate 50% non-refundable prepayment or credit card pre-authorization within 48h. Include room in daily overbooking pool for targeted resale.
+            </div>
+          </div>
+
+          <div class="action-box" style="border-left-color: var(--accent-purple); margin-top: 10px;">
+            <div class="action-title">SHAP Local Feature Attribution Drivers:</div>
+            <div class="action-desc" id="res-shap-attribution">
+              • High Lead Time (+28.4% risk)<br>
+              • Non-Refundable Deposit paradox (+22.1% risk)<br>
+              • Zero Special Requests (+7.2% risk)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 4: REVENUE & OVERBOOKING ENGINE -->
+  <section id="tab-simulator" class="tab-content">
+    <div class="glass-panel">
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title">💰 Expected Value Matrix & Decision Threshold Optimization</h2>
+          <p class="panel-subtitle">Balancing empty room perishability loss ($150) against guest walking friction ($40)</p>
+        </div>
+      </div>
+
+      <div class="grid-2col">
+        <div>
+          <div class="figure-frame">
+            <img src="assets/fig11_cost_benefit_optimization.png" class="figure-img" alt="Cost Benefit Curve">
+            <div class="figure-caption">Empirical Expected Profit Curve vs Classification Threshold. Optimal cutoff $T^* = 0.39$ yields +$84,557 lift per 100k bookings.</div>
+          </div>
+        </div>
+
+        <div>
+          <div style="background: rgba(15, 23, 42, 0.7); padding: 20px; border-radius: var(--radius-md); margin-bottom: 20px;">
+            <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 12px;">Statistical Overbooking Calculator (Poisson-Binomial)</h3>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;">
+              Calculates the exact safe daily overbooking room buffer $B = \lfloor \mu - z_\alpha \sigma \rfloor$ to ensure the probability of walking a guest is below $\alpha = 0.5\%$.
+            </p>
+
+            <div class="form-group">
+              <label class="form-label">Total Confirmed Daily Bookings ($N$): <span class="range-val" id="val-sim-n">200 bookings</span></label>
+              <input type="range" class="form-range" id="inp-sim-n" min="50" max="500" value="200" oninput="updateRange('sim-n', this.value, ' bookings'); recalculateOverbooking();">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Average Predicted Cancellation Probability ($\bar{p}$): <span class="range-val" id="val-sim-p">37%</span></label>
+              <input type="range" class="form-range" id="inp-sim-p" min="10" max="70" value="37" oninput="updateRange('sim-p', this.value, '%'); recalculateOverbooking();">
+            </div>
+
+            <div style="background: rgba(0, 0, 0, 0.4); padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-glass); margin-top: 14px;">
+              <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;">
+                <span style="color: var(--text-secondary);">Expected Daily Cancellations ($\mu$):</span>
+                <strong id="sim-res-mu" style="color: #60a5fa;">74.0 rooms</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;">
+                <span style="color: var(--text-secondary);">Standard Deviation ($\sigma$):</span>
+                <strong id="sim-res-sigma">6.83 rooms</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; border-top: 1px solid var(--border-glass); padding-top: 8px;">
+                <span style="color: #34d399;">Recommended Safe Overbooking Buffer:</span>
+                <strong id="sim-res-buffer" style="color: #34d399; font-size: 18px;">56 rooms</strong>
+              </div>
+              <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">
+                99.5% Confidence Guarantee (Walk Risk &lt; 0.5%)
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 5: CUSTOMER PERSONAS -->
+  <section id="tab-segments" class="tab-content">
+    <div class="glass-panel">
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title">👥 Unsupervised Behavioral Customer Personas ($K=4$)</h2>
+          <p class="panel-subtitle">Tailored operational playbooks derived from K-Means clustering & silhouette optimization</p>
+        </div>
+      </div>
+
+      <div class="grid-2col" style="margin-bottom: 24px;">
+        <div class="figure-frame">
+          <img src="assets/fig7_cluster_elbow_silhouette.png" class="figure-img" alt="Cluster Elbow & Silhouette">
+          <div class="figure-caption">Elbow Method & Silhouette Coefficient confirming optimal cluster count $K=4$.</div>
+        </div>
+        <div class="figure-frame">
+          <img src="assets/fig8_customer_clusters_pca.png" class="figure-img" alt="Customer Clusters PCA">
+          <div class="figure-caption">2D Principal Component Projection of the 4 Distinct Behavioral Guest Archetypes.</div>
+        </div>
+      </div>
+
+      <div class="grid-2col" id="personas-container">
+        <!-- Persona 0 -->
+        <div class="persona-card">
+          <div class="persona-header">
+            <span class="persona-name" style="color: #60a5fa;">Persona 1: Spontaneous Short-Stay Business</span>
+            <span class="badge badge-primary">Low Cancel Risk (24%)</span>
+          </div>
+          <div class="persona-stat"><span class="persona-stat-label">Average Lead Time:</span><span class="persona-stat-val">32.4 days</span></div>
+          <div class="persona-stat"><span class="persona-stat-label">Average Stay Duration:</span><span class="persona-stat-val">2.1 nights</span></div>
+          <div class="persona-stat"><span class="persona-stat-label">Average Daily Rate (ADR):</span><span class="persona-stat-val">$108.50</span></div>
+          <div class="action-box" style="margin-top: 12px;">
+            <div class="action-title">Recommended Hotel Policy:</div>
+            <div class="action-desc">Offer flexible cancellation up to 24h before arrival, express mobile check-in, and last-minute room upgrades.</div>
+          </div>
+        </div>
+
+        <!-- Persona 1 -->
+        <div class="persona-card">
+          <div class="persona-header">
+            <span class="persona-name" style="color: #f87171;">Persona 2: High-Risk Long-Lead Booker</span>
+            <span class="badge badge-danger">High Cancel Risk (68%)</span>
+          </div>
+          <div class="persona-stat"><span class="persona-stat-label">Average Lead Time:</span><span class="persona-stat-val">218.6 days</span></div>
+          <div class="persona-stat"><span class="persona-stat-label">Average Stay Duration:</span><span class="persona-stat-val">3.8 nights</span></div>
+          <div class="persona-stat"><span class="persona-stat-label">Average Daily Rate (ADR):</span><span class="persona-stat-val">$92.40</span></div>
+          <div class="action-box" style="margin-top: 12px; border-left-color: var(--accent-rose);">
+            <div class="action-title">Recommended Hotel Policy:</div>
+            <div class="action-desc">Mandate 50% non-refundable deposit, automated 14-day pre-arrival reconfirmation SMS, and include in dynamic overbooking pool.</div>
+          </div>
+        </div>
+
+        <!-- Persona 2 -->
+        <div class="persona-card">
+          <div class="persona-header">
+            <span class="persona-name" style="color: #34d399;">Persona 3: Premium Family & Leisure Vacationer</span>
+            <span class="badge badge-success">Medium Risk (32%)</span>
+          </div>
+          <div class="persona-stat"><span class="persona-stat-label">Average Lead Time:</span><span class="persona-stat-val">98.2 days</span></div>
+          <div class="persona-stat"><span class="persona-stat-label">Average Stay Duration:</span><span class="persona-stat-val">5.4 nights</span></div>
+          <div class="persona-stat"><span class="persona-stat-label">Average Daily Rate (ADR):</span><span class="persona-stat-val">$164.20</span></div>
+          <div class="action-box" style="margin-top: 12px; border-left-color: var(--accent-emerald);">
+            <div class="action-title">Recommended Hotel Policy:</div>
+            <div class="action-desc">Confirm extra bedding/cribs in advance, upsell reserved parking and resort meal packages (Half Board).</div>
+          </div>
+        </div>
+
+        <!-- Persona 3 -->
+        <div class="persona-card">
+          <div class="persona-header">
+            <span class="persona-name" style="color: #fbbf24;">Persona 4: Loyal Repeated / Direct Guest</span>
+            <span class="badge badge-warning">Minimal Risk (11%)</span>
+          </div>
+          <div class="persona-stat"><span class="persona-stat-label">Average Lead Time:</span><span class="persona-stat-val">22.1 days</span></div>
+          <div class="persona-stat"><span class="persona-stat-label">Average Stay Duration:</span><span class="persona-stat-val">2.8 nights</span></div>
+          <div class="persona-stat"><span class="persona-stat-label">Repeat Guest Ratio:</span><span class="persona-stat-val">100.0%</span></div>
+          <div class="action-box" style="margin-top: 12px; border-left-color: var(--accent-amber);">
+            <div class="action-title">Recommended Hotel Policy:</div>
+            <div class="action-desc">VIP loyalty perks, complimentary room upgrades, zero deposit requirements, and priority front-desk check-in.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 6: MODEL COMPARISON & EVIDENCE LOGS -->
+  <section id="tab-benchmarks" class="tab-content">
+    <div class="glass-panel">
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title">🏆 Candidate Model Benchmarking & Multi-Metric Comparison</h2>
+          <p class="panel-subtitle">Evaluated on Held-Out Test Set ($N = 23,842$) and 5-Fold Stratified Cross-Validation</p>
+        </div>
+      </div>
+
+      <div class="table-responsive" style="margin-bottom: 24px;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Model Candidate</th>
+              <th>Type / Family</th>
+              <th>Accuracy</th>
+              <th>Precision</th>
+              <th>Recall</th>
+              <th>F1-Score</th>
+              <th>ROC-AUC</th>
+              <th>PR-AUC</th>
+              <th>Brier Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Dummy Baseline</td>
+              <td>Majority Class (0)</td>
+              <td>62.92%</td>
+              <td>0.0000</td>
+              <td>0.0000</td>
+              <td>0.0000</td>
+              <td>0.5000</td>
+              <td>0.3708</td>
+              <td>0.3708</td>
+            </tr>
+            <tr>
+              <td>Heuristic Baseline</td>
+              <td>Lead Time Rule (&gt;100d)</td>
+              <td>65.50%</td>
+              <td>0.5498</td>
+              <td>0.3838</td>
+              <td>0.4521</td>
+              <td>0.5993</td>
+              <td>0.4395</td>
+              <td>0.2350</td>
+            </tr>
+            <tr>
+              <td>Logistic Regression</td>
+              <td>Linear (L2 Regularized)</td>
+              <td>83.20%</td>
+              <td>0.8174</td>
+              <td>0.7042</td>
+              <td>0.7566</td>
+              <td>0.9096</td>
+              <td>0.8764</td>
+              <td>0.1146</td>
+            </tr>
+            <tr class="highlight-row">
+              <td><strong>Random Forest</strong></td>
+              <td>Ensemble (Bagging 150 Trees)</td>
+              <td><strong>87.40%</strong></td>
+              <td>0.8239</td>
+              <td><strong>0.8397</strong></td>
+              <td><strong>0.8317</strong></td>
+              <td><strong>0.9473</strong></td>
+              <td><strong>0.9239</strong></td>
+              <td>0.0933</td>
+            </tr>
+            <tr class="highlight-row" style="background: rgba(16, 185, 129, 0.1) !important;">
+              <td><strong>XGBoost (Champion)</strong></td>
+              <td>Ensemble (Gradient Boosting)</td>
+              <td>86.75%</td>
+              <td>0.8470</td>
+              <td>0.7843</td>
+              <td>0.8144</td>
+              <td>0.9427</td>
+              <td>0.9173</td>
+              <td>0.0926</td>
+            </tr>
+            <tr>
+              <td>LightGBM</td>
+              <td>Ensemble (Leaf-wise Boosting)</td>
+              <td>86.99%</td>
+              <td><strong>0.8510</strong></td>
+              <td>0.7868</td>
+              <td>0.8176</td>
+              <td>0.9453</td>
+              <td>0.9202</td>
+              <td><strong>0.0907</strong></td>
+            </tr>
+            <tr>
+              <td>Multi-Layer Perceptron</td>
+              <td>Neural Network (64-32 Dense)</td>
+              <td>86.47%</td>
+              <td>0.8261</td>
+              <td>0.8045</td>
+              <td>0.8152</td>
+              <td>0.9398</td>
+              <td>0.9139</td>
+              <td>0.0948</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="grid-2col">
+        <div class="figure-frame">
+          <img src="assets/fig12_shap_feature_importance.png" class="figure-img" alt="SHAP Global Importance">
+          <div class="figure-caption">SHAP Global Feature Importance Ranking across Top 20 Booking Attributes.</div>
+        </div>
+        <div class="figure-frame">
+          <img src="assets/fig13_shap_beeswarm.png" class="figure-img" alt="SHAP Beeswarm">
+          <div class="figure-caption">SHAP Summary Beeswarm Plot showing direction of impact on cancellation log-odds.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>IT3091 Machine Learning Group Project — Domain 6: Tourism & Hospitality (Hotel Booking Demand)</p>
+    <p style="margin-top: 4px; font-size: 11px;">Built with reproducible Python pipelines, Scikit-Learn, XGBoost, LightGBM, SHAP, and Glassmorphic Vanilla Web Stack.</p>
+  </footer>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

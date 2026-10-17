@@ -1,0 +1,156 @@
+{
+  "top_features": [
+    {
+      "rank": 1,
+      "feature": "deposit_type_Non Refund",
+      "importance": 1.0003
+    },
+    {
+      "rank": 2,
+      "feature": "country_grouped_PRT",
+      "importance": 0.7804
+    },
+    {
+      "rank": 3,
+      "feature": "required_car_parking_spaces",
+      "importance": 0.5403
+    },
+    {
+      "rank": 4,
+      "feature": "market_segment_Online TA",
+      "importance": 0.5005
+    },
+    {
+      "rank": 5,
+      "feature": "lead_time",
+      "importance": 0.471
+    },
+    {
+      "rank": 6,
+      "feature": "total_of_special_requests",
+      "importance": 0.4442
+    },
+    {
+      "rank": 7,
+      "feature": "room_type_mismatched_0",
+      "importance": 0.265
+    },
+    {
+      "rank": 8,
+      "feature": "cancellation_ratio",
+      "importance": 0.2612
+    },
+    {
+      "rank": 9,
+      "feature": "adr",
+      "importance": 0.2171
+    },
+    {
+      "rank": 10,
+      "feature": "customer_type_Transient",
+      "importance": 0.1924
+    },
+    {
+      "rank": 11,
+      "feature": "deposit_type_No Deposit",
+      "importance": 0.168
+    },
+    {
+      "rank": 12,
+      "feature": "booking_changes",
+      "importance": 0.1436
+    },
+    {
+      "rank": 13,
+      "feature": "arrival_date_week_number",
+      "importance": 0.1119
+    },
+    {
+      "rank": 14,
+      "feature": "customer_type_Transient-Party",
+      "importance": 0.1113
+    },
+    {
+      "rank": 15,
+      "feature": "hotel_City Hotel",
+      "importance": 0.1103
+    },
+    {
+      "rank": 16,
+      "feature": "market_segment_Offline TA/TO",
+      "importance": 0.1032
+    },
+    {
+      "rank": 17,
+      "feature": "adr_per_person",
+      "importance": 0.0725
+    },
+    {
+      "rank": 18,
+      "feature": "country_grouped_DEU",
+      "importance": 0.0693
+    },
+    {
+      "rank": 19,
+      "feature": "market_segment_Direct",
+      "importance": 0.0646
+    },
+    {
+      "rank": 20,
+      "feature": "previous_bookings_not_canceled",
+      "importance": 0.0546
+    }
+  ],
+  "local_cases": {
+    "high_risk_example": {
+      "predicted_probability": 1.0,
+      "top_positive_push": [
+        {
+          "feature": "deposit_type_Non Refund",
+          "shap_value": 3.811
+        },
+        {
+          "feature": "cancellation_ratio",
+          "shap_value": 3.264
+        },
+        {
+          "feature": "deposit_type_No Deposit",
+          "shap_value": 1.355
+        },
+        {
+          "feature": "lead_time",
+          "shap_value": 0.87
+        },
+        {
+          "feature": "country_grouped_PRT",
+          "shap_value": 0.862
+        }
+      ]
+    },
+    "low_risk_example": {
+      "predicted_probability": 0.0,
+      "top_negative_push": [
+        {
+          "feature": "required_car_parking_spaces",
+          "shap_value": -5.316
+        },
+        {
+          "feature": "country_grouped_PRT",
+          "shap_value": -0.775
+        },
+        {
+          "feature": "market_segment_Online TA",
+          "shap_value": -0.677
+        },
+        {
+          "feature": "deposit_type_Non Refund",
+          "shap_value": -0.446
+        },
+        {
+          "feature": "booking_changes",
+          "shap_value": -0.437
+        }
+      ]
+    }
+  }
+}
