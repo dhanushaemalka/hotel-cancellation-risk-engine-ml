@@ -8,6 +8,7 @@ __pycache__/
 .notebook-runtime/
 .ipynb_checkpoints/
 before_notebook_run/
+*.bak
 
 # Virtual Environments
 .venv/

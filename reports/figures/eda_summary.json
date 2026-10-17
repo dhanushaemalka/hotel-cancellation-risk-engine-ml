@@ -1,0 +1,105 @@
+{
+  "dataset_shape": {
+    "rows": 119390,
+    "columns": 32
+  },
+  "cancellation_rate_overall": 37.04,
+  "target_counts": {
+    "0": 75166,
+    "1": 44224
+  },
+  "missing_values": {
+    "children": 4,
+    "country": 488,
+    "agent": 16340,
+    "company": 112593
+  },
+  "missing_percentages": {
+    "children": 0.0,
+    "country": 0.41,
+    "agent": 13.69,
+    "company": 94.31
+  },
+  "anomalies": {
+    "zero_total_guests": 180,
+    "negative_adr": 1,
+    "extreme_adr_over_1000": 1
+  },
+  "hotel_breakdown": {
+    "Resort Hotel": {
+      "total": 40060,
+      "cancellations": 11122,
+      "cancel_rate": 27.76
+    },
+    "City Hotel": {
+      "total": 79330,
+      "cancellations": 33102,
+      "cancel_rate": 41.73
+    }
+  },
+  "market_segments": [
+    {
+      "market_segment": "Aviation",
+      "count": 237,
+      "mean": 21.94
+    },
+    {
+      "market_segment": "Complementary",
+      "count": 743,
+      "mean": 13.06
+    },
+    {
+      "market_segment": "Corporate",
+      "count": 5295,
+      "mean": 18.73
+    },
+    {
+      "market_segment": "Direct",
+      "count": 12606,
+      "mean": 15.34
+    },
+    {
+      "market_segment": "Groups",
+      "count": 19811,
+      "mean": 61.06
+    },
+    {
+      "market_segment": "Offline TA/TO",
+      "count": 24219,
+      "mean": 34.32
+    },
+    {
+      "market_segment": "Online TA",
+      "count": 56477,
+      "mean": 36.72
+    },
+    {
+      "market_segment": "Undefined",
+      "count": 2,
+      "mean": 100.0
+    }
+  ],
+  "deposit_types": [
+    {
+      "deposit_type": "No Deposit",
+      "count": 104641,
+      "mean": 28.38
+    },
+    {
+      "deposit_type": "Non Refund",
+      "count": 14587,
+      "mean": 99.36
+    },
+    {
+      "deposit_type": "Refundable",
+      "count": 162,
+      "mean": 22.22
+    }
+  ],
+  "lead_time": {
+    "overall_mean": 104.0,
+    "overall_median": 69.0,
+    "canceled_mean": 144.8,
+    "not_canceled_mean": 80.0
+  }
+}
