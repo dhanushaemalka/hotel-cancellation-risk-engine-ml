@@ -1,0 +1,26 @@
+{
+  "cost_parameters": {
+    "cost_false_negative_room_loss": 150.0,
+    "cost_false_positive_relocation": 40.0,
+    "gain_true_positive_resale": 120.0,
+    "gain_true_negative_stay": 150.0
+  },
+  "default_threshold": 0.5,
+  "default_profit_per_booking": 107.3,
+  "optimal_threshold": 0.39,
+  "optimal_profit_per_booking": 108.15,
+  "profit_lift_per_booking": 0.85,
+  "annualized_gain_per_100k_bookings": 84556.66,
+  "confusion_matrix_default_0_5": {
+    "tn": 13750,
+    "fp": 1252,
+    "fn": 1907,
+    "tp": 6933
+  },
+  "confusion_matrix_optimal": {
+    "tn": 13093,
+    "fp": 1909,
+    "fn": 1370,
+    "tp": 7470
+  }
+}
